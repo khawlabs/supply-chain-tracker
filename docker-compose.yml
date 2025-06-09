@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+
+  postgres:
+    image: postgres:15
+    container_name: shipment_postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: shipment_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: kafka-init
+    depends_on:
+      - kafka
+    entrypoint: >
+      bash -c "
+        echo '⏳ Waiting for Kafka to be available...';
+        while ! nc -z kafka 9092; do sleep 5; done;
+        echo '✅ Kafka is up. Creating topics...';
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic shipment.created &&
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic shipment.notification;
+        echo '✅ Topics created.';
+      "
+
+  init-waiter:
+    image: busybox:1.36
+    depends_on:
+      - kafka-init
+      - postgres
+    entrypoint: >
+      /bin/sh -c "
+        echo 'Waiting for Kafka topics...';
+        until nc -z kafka 9092; do sleep 2; done;
+        echo 'Waiting for Postgres...';
+        until nc -z postgres 5432; do sleep 2; done;
+        echo '✅ All dependencies are up.';
+      "
+    networks:
+      - default
+
+  shipment-service:
+    build:
+      context: .
+      dockerfile: docker/shipment-service/Dockerfile
+    container_name: shipment-service
+    depends_on:
+      - init-waiter
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shipment_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  kafka-publisher:
+    build:
+      context: ./docker/kafka-publisher
+    container_name: kafka-publisher
+    depends_on:
+      - init-waiter
+    restart: always
