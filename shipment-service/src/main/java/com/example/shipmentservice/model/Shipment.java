@@ -1,12 +1,8 @@
 package com.example.shipmentservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +16,12 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String shipmentId;
+
+    @Version
+    private Long version; // Enables optimistic locking for internal communication for db integration
+
     private String origin;
     private String destination;
     private String status;
