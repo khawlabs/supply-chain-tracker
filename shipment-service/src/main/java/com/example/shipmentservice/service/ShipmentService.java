@@ -2,9 +2,12 @@ package com.example.shipmentservice.service;
 
 
 import com.example.shipmentservice.dto.ShipmentDto;
+import com.example.shipmentservice.exception.RessourceNotFoundException;
 import com.example.shipmentservice.kafka.ShipmentEventProducer;
+import com.example.shipmentservice.mapper.ShipmentMapper;
 import com.example.shipmentservice.model.Shipment;
 import com.example.shipmentservice.repository.ShipmentRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +19,13 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ShipmentService {
-
     private final ShipmentRepository shipmentRepository;
+
+    private final ShipmentMapper shipmentMapper;
     private final ShipmentEventProducer eventProducer;
+
+    private static final String SHIPMENT_NOT_FOUND = "Shipment not found";
+
     @Transactional
     public Shipment createShipment(ShipmentDto shipmentDto, boolean sendNotification) throws Exception {
         try {
@@ -31,15 +38,8 @@ public class ShipmentService {
                 return existing.get();
             }
 
-            Shipment shipment = Shipment.builder()
-                    .id(shipmentDto.getId()) // Optional: omit this if DB auto-generates it
-                    .shipmentId(shipmentDto.getShipmentId())
-                    .origin(shipmentDto.getOrigin())
-                    .destination(shipmentDto.getDestination())
-                    .createdAt(shipmentDto.getCreatedAt())
-                    .status("CREATED")
-                    .build();
-
+            Shipment shipment = shipmentMapper.dtoToEntity( shipmentDto );
+            shipment.setStatus("CREATED");
             Shipment shipmentSaved = shipmentRepository.save(shipment);
 
             if (sendNotification) {
@@ -54,11 +54,35 @@ public class ShipmentService {
             throw new Exception("Failed to create shipment", e);
         }
     }
+    public Shipment updateShipment( Long id, ShipmentDto shipmentDto ) {
 
+        Optional<Shipment> shipmentSearched = shipmentRepository.findById( id );
+        Shipment shipmentToUpdate = shipmentMapper.dtoToEntity(shipmentDto) ;
+        if ( shipmentSearched.isPresent() ) {
+            shipmentToUpdate = shipmentRepository.save( shipmentToUpdate );
+            return shipmentToUpdate;
+        } else
+            throw new RessourceNotFoundException( SHIPMENT_NOT_FOUND );
+    }
 
     public List<Shipment> getAllShipments() {
         List<Shipment> shipments = shipmentRepository.findAll();
         return shipments;
     }
 
+    public Shipment getShipmentById( Long id ) {
+        Optional<Shipment> shipmentSearch = shipmentRepository.findById( id );
+        if ( shipmentSearch.isPresent() ) {
+            return shipmentSearch.get();
+        } else {
+            throw new RessourceNotFoundException( "shipment with id " + id + " not found" );
+        }
+    }
+    @Transactional
+    public void deleteShipment(Long id) {
+        Shipment shipment = shipmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Shipment with ID " + id + " not found"));
+        shipmentRepository.delete(shipment);
+        log.info("🗑️ Shipment deleted: {}", id);
+    }
 }

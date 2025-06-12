@@ -2,15 +2,14 @@ package com.example.shipmentservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Shipment {
+@SuperBuilder
+public class Shipment extends Auditable<Long>  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,5 +24,8 @@ public class Shipment {
     private String origin;
     private String destination;
     private String status;
-    private LocalDateTime createdAt;
+
+ /*   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "execution_plan_id", referencedColumnName = "id")
+    private ExecutionPlan executionPlan;*/
 }
