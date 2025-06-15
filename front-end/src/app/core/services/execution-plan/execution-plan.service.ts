@@ -31,7 +31,11 @@ export class ExecutionPlanService {
         return this.http.get<ExecutionPlan>(`${this.apiUrl}/${id}`);
     }
 
+    getExecutionPlanByShipmentId(id: number): Observable<ExecutionPlan> {
+    return this.http.get<ExecutionPlan>(`${this.apiUrl}/shipmentId/${id}`);
+    }
+
     deleteExecutionPlan(id: number): Observable<ExecutionPlan> {
-      return this.http.get<ExecutionPlan>(`${this.apiUrl}/${id}`);
+      return this.http.delete<ExecutionPlan>(`${this.apiUrl}/${id}`);
     }
 }

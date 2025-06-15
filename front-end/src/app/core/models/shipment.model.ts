@@ -8,4 +8,5 @@ export interface Shipment {
   createdBy: string;
   lastModifiedBy: string;
   lastModifiedAt: string;
+  assigned: boolean;
 }

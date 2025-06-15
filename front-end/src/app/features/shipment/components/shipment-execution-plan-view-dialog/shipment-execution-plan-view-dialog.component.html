@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Shipment Execution Plan</h2>
+
+<mat-dialog-content>
+
+  <!-- Shipment Card -->
+  <mat-card class="section-card">
+    <mat-card-title>Shipment</mat-card-title>
+    <mat-card-content>
+      <p><strong>ID:</strong> {{ shipment.id }}</p>
+      <p><strong>Shipment Id:</strong> {{ shipment.shipmentId }}</p>
+      <p><strong>Origin:</strong> {{ shipment.origin }}</p>
+      <p><strong>Destination:</strong> {{ shipment.destination }}</p>
+      <p><strong>Created:</strong> {{ shipment.createdAt | date: 'dd.MM.yyyy HH:mm' }}</p>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Execution Plan Card -->
+  <mat-card class="section-card">
+    <mat-card-title>Execution Plan</mat-card-title>
+    <mat-card-content>
+      <p><strong>ID:</strong> {{ plan?.id }}</p>
+      <p><strong>Priority:</strong> {{ plan?.priority }}</p>
+      <p><strong>Estimated Delivery:</strong> {{ plan?.estimatedDeliveryDate | date: 'dd.MM.yyyy' }}</p>
+
+      <p class="label-with-icon">
+        <strong>Fragile:</strong>
+        <mat-icon color="primary" *ngIf="plan?.fragile">check_circle</mat-icon>
+        <mat-icon color="warn" *ngIf="!plan?.fragile">cancel</mat-icon>
+      </p>
+
+      <p class="label-with-icon">
+        <strong>Notify Customer:</strong>
+        <mat-icon color="primary" *ngIf="plan?.notifyCustomer">check_circle</mat-icon>
+        <mat-icon color="warn" *ngIf="!plan?.notifyCustomer">cancel</mat-icon>
+      </p>
+
+
+      <p><strong>Template:</strong> {{ plan?.planTemplate?.name }}</p>
+
+      <div *ngIf="plan?.planTemplate?.actions?.length">
+        <p><strong>Actions:</strong></p>
+        <ul class="action-list">
+          <li *ngFor="let action of plan?.planTemplate?.actions">
+            {{ action.name }}
+          </li>
+        </ul>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

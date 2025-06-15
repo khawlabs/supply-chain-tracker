@@ -58,8 +58,18 @@ public class ShipmentController {
             if ( CollectionUtils.isEmpty( shipments ) ) {
                 return ResponseEntity.noContent().build();
             } else {
-                List<ShipmentDto> shipmentsDto = shipmentMapper.listEntityToDto( shipments );
-                return ResponseEntity.ok( shipmentsDto );
+                //List<ShipmentDto> shipmentsDto = shipmentMapper.listEntityToDto( shipments );
+                //return ResponseEntity.ok( shipmentsDto );
+                List<ShipmentDto> shipmentDtos = shipments.stream()
+                        .map(shipment -> {
+                            ShipmentDto dto = shipmentMapper.entityToDto(shipment);
+                            Boolean isAssigned = shipmentService.checkAssignedShipment(shipment.getId());
+                            dto.setAssigned(isAssigned);
+                            return dto;
+                        })
+                        .toList();
+
+                return ResponseEntity.ok(shipmentDtos);
             }
         }
         catch ( Exception e ) {
@@ -75,6 +85,7 @@ public class ShipmentController {
         try {
             Shipment shipment = shipmentService.getShipmentById(id);
             ShipmentDto dto = shipmentMapper.entityToDto(shipment);
+            dto.setAssigned(shipmentService.checkAssignedShipment(dto.getId()));
             return new ResponseEntity<>( dto, HttpStatus.OK );
         }
         catch (EntityNotFoundException ex) {

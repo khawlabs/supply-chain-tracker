@@ -9,33 +9,49 @@
   overflow: hidden;
 }
 
-.search-bar {
+.search-refresh-row {
+  display: flex;
+  align-items: center;
   margin-bottom: pxToRem(10);
+  gap: pxToRem(8);
+}
+
+.search-bar {
+  flex: 1;
   padding: pxToRem(8);
   width: 100%;
   box-sizing: border-box;
   border-radius: pxToRem(10);
 }
 
+.refresh-button {
+  height: pxToRem(40);
+  width: pxToRem(40);
+  border-radius: 50%;
+  background-color: whitesmoke;
+
+  mat-icon {
+    font-size: pxToRem(20);
+  }
+}
 
 .loading-overlay {
   position: absolute;
   left: 0;
   min-width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  background: rgba(255, 255, 255, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: pxToRem(20);
   font-weight: bold;
   color: #894500;
-  z-index: 99; /* Ensures it appears above the table */
+  z-index: 99;
 }
 
-
 .table-container {
-  flex-grow: 1; /* Fills remaining space in `.container` */
+  flex-grow: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -45,7 +61,7 @@
   width: 100%;
   border-collapse: separate;
   border-radius: pxToRem(10%);
-  flex-grow: 1; /* Makes the table stretch to full height */
+  flex-grow: 1;
 }
 
 .table, .table th, .table td {
@@ -66,21 +82,22 @@
   z-index: 1;
   min-width: 5%;
 }
+
 .table td {
   background-color: whitesmoke;
 }
+
 .table td i {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
 }
+
 .fa-check-circle, .fa-times-circle {
   font-size: pxToRem(19);
 }
-button[mat-icon-button] {
-  margin-right: pxToRem(4);
-}
+
 .fa-check-circle {
   color: green;
 }

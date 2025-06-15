@@ -25,8 +25,4 @@ public class Shipment extends Auditable<Long>  {
     private String destination;
     private String status;
 
-   //@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    //@JoinColumn(name = "execution_plan_id", referencedColumnName = "id")
-    //@OneToOne(mappedBy = "shipment")
-    //private ExecutionPlan executionPlan;
 }

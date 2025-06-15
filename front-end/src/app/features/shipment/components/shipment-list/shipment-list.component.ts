@@ -14,7 +14,9 @@ import {ExecutionPlanService} from "src/app/core/services/execution-plan/executi
 import {
   PlanCreateShipmentDialogComponent
 } from "src/app/features/shipment/components/plan-create-shipment-dialog/plan-create-shipment-dialog.component";
-import {ExecutionPlanModule} from "src/app/features/execution-plan/execution-plan.module";
+import {
+  ShipmentExecutionPlanViewDialogComponent
+} from "src/app/features/shipment/components/shipment-execution-plan-view-dialog/shipment-execution-plan-view-dialog.component";
 
 @Component({
   selector: 'app-shipment-list',
@@ -78,6 +80,13 @@ export class ShipmentListComponent {
     });
   }
 
+  openExecutionPlanDialog(shipment: Shipment): void {
+    this.dialog.open(ShipmentExecutionPlanViewDialogComponent, {
+      width: '500px',
+      data: shipment
+    });
+  }
+
   confirmDelete(shipment: Shipment): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
@@ -93,12 +102,16 @@ export class ShipmentListComponent {
 
       this.shipmentService.deleteShipmentById(shipment.id).subscribe({
         next: () => {
-          this.snackBar.open('🗑️ Shipment deleted.', 'Close', { duration: 3000 });
+          this.snackBar.open('🗑️ Shipment deleted.', 'Close', { duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top' });
           this.loadShipments(); // refresh after delete
         },
         error: err => {
           console.error('Delete failed:', err);
-          this.snackBar.open('❌ Delete failed.', 'Close', { duration: 3000 });
+          this.snackBar.open('❌ Delete failed.', 'Close', { duration: 3000 ,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'});
         },
         complete: () => this.globalLoading.hide()
       });

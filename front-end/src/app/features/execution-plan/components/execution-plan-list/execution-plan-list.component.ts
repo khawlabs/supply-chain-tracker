@@ -57,12 +57,16 @@ export class ExecutionPlanListComponent {
 
       this.planService.deleteExecutionPlan(planId).subscribe({
         next: () => {
-          this.snackBar.open('✅ Execution plan deleted', 'Close', { duration: 3000 });
+          this.snackBar.open('✅ Execution plan deleted', 'Close', { duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top' });
           this.loadPlans();
         },
         error: err => {
           console.error('Delete failed:', err);
-          this.snackBar.open('❌ Failed to delete plan', 'Close', { duration: 3000 });
+          this.snackBar.open('❌ Failed to delete plan', 'Close', { duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'});
         },
         complete: () => this.globalLoading.hide()
       });

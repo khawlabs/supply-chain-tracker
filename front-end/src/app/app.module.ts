@@ -10,6 +10,7 @@ import {ExecutionPlanModule} from "./features/execution-plan/execution-plan.modu
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {RouterModule} from "@angular/router";
 import {ShipmentModule} from "src/app/features/shipment/shipment.module";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {ShipmentModule} from "src/app/features/shipment/shipment.module";
     SharedModule,
     LayoutsModule,
     ExecutionPlanModule,
-    ShipmentModule
+    ShipmentModule,
+    MatSnackBarModule
   ],
   providers: [
     provideAnimationsAsync()

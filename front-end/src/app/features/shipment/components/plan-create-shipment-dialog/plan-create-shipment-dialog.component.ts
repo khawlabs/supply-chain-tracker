@@ -56,9 +56,7 @@ export class PlanCreateShipmentDialogComponent implements OnInit {
       notifyCustomer: formValue.notifyCustomer,
       planTemplateId: formValue.planTemplate.id,
       shipmentId: this.shipment.shipmentId,
-      shipment : {
-        id: this.shipment.id
-      }
+      shipment : this.shipment
     };
 
     this.dialogRef.close(payload);

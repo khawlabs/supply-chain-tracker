@@ -15,6 +15,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatCardModule} from "@angular/material/card";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { ShipmentExecutionPlanViewDialogComponent } from './components/shipment-execution-plan-view-dialog/shipment-execution-plan-view-dialog.component';
 
 
 
@@ -22,6 +23,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
   declarations: [
     ShipmentListComponent,
     PlanCreateShipmentDialogComponent,
+    ShipmentExecutionPlanViewDialogComponent,
   ],
   imports: [
     CommonModule,

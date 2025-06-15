@@ -21,4 +21,5 @@ public class ShipmentDto extends AuditableDto<Long>{
     private String origin;
     private String destination;
     private String status;
+    private boolean assigned;
 }

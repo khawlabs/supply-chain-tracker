@@ -82,6 +82,14 @@ public class ExecutionPlanService {
             throw new RessourceNotFoundException( "executionPlan with id " + id + " not found" );
         }
     }
+    public ExecutionPlan getExecutionPlanByShipmentId( Long id ) {
+        Optional<ExecutionPlan> executionPlanSearch = executionPlanRepository.findByShipmentId( id );
+        if ( executionPlanSearch.isPresent() ) {
+            return executionPlanSearch.get();
+        } else {
+            throw new RessourceNotFoundException( "executionPlan with shipmentId " + id + " not found" );
+        }
+    }
     @Transactional
     public void deleteExecutionPlan(Long id) {
         ExecutionPlan executionPlan = executionPlanRepository.findById(id)

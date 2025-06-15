@@ -1,12 +1,28 @@
 <div class="container">
-  <input type="text" [formControl]="searchControl" placeholder="Search..." class="search-bar" />
+  <div class="search-refresh-row">
+    <input
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Search..."
+      class="search-bar"
+    />
 
-  <div *ngIf="globalLoading.loading$ | async" class="loading-overlay">Loading...</div>
+    <button
+      mat-icon-button
+      color="primary"
+      matTooltip="Refresh Shipments"
+      class="refresh-button"
+      (click)="loadShipments()"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
 
   <div class="table-container">
     <table class="table">
       <thead>
       <tr>
+        <th>Id</th>
         <th>Shipment Id</th>
         <th>Created Date</th>
         <th>Origin</th>
@@ -18,27 +34,40 @@
       <tbody>
       <ng-container *ngIf="shipments$ | async as shipments">
         <tr *ngFor="let shipment of shipments">
+          <td>{{ shipment.id }}</td>
           <td>{{ shipment.shipmentId }}</td>
           <td>{{ shipment.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
           <td>{{ shipment.origin }}</td>
           <td>{{ shipment.destination }}</td>
           <td>{{ shipment.status }}</td>
           <td>
-            <button
-              mat-icon-button
-              color="primary"
-              matTooltip="Create execution plan"
-              (click)="openPlanDialog(shipment)"
+            <!-- If not assigned -->
+            <button *ngIf="shipment.assigned == false"
+                    mat-icon-button
+                    color="primary"
+                    matTooltip="Create execution plan"
+                    (click)="openPlanDialog(shipment)"
             >
               <mat-icon>add_task</mat-icon>
             </button>
-            <button
-              mat-icon-button
-              color="warn"
-              matTooltip="Delete shipment"
-              (click)="confirmDelete(shipment)"
+
+            <button *ngIf="shipment.assigned == false"
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Delete shipment"
+                    (click)="confirmDelete(shipment)"
             >
               <mat-icon>delete</mat-icon>
+            </button>
+
+            <!-- If assigned -->
+            <button *ngIf="shipment.assigned == true"
+                    mat-icon-button
+                    color="accent"
+                    matTooltip="View execution plan"
+                    (click)="openExecutionPlanDialog(shipment)"
+            >
+              <mat-icon>visibility</mat-icon>
             </button>
           </td>
         </tr>

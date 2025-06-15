@@ -1,12 +1,23 @@
 <div class="container">
-  <input
-    type="text"
-    [formControl]="searchControl"
-    placeholder="Search..."
-    class="search-bar"
-  />
+  <div class="search-refresh-row">
+    <input
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Search..."
+      class="search-bar"
+    />
 
-  <div *ngIf="globalLoading.loading$ | async" class="loading-overlay">Loading...</div>
+    <button
+      mat-icon-button
+      color="primary"
+      matTooltip="Refresh Execution Plans"
+      class="refresh-button"
+      (click)="loadPlans()"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
 
   <div class="table-container">
     <table class="table">

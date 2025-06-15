@@ -90,6 +90,23 @@ public class ExecutionPlanController {
             return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
+    @GetMapping("/shipmentId/{id}")
+    public ResponseEntity<?> getExecutionPlanByShipmentId( @PathVariable Long id ) {
+        if ( id == null ) {
+            return new ResponseEntity<>( HttpStatus.BAD_REQUEST );
+        }
+        try {
+            ExecutionPlan executionPlan = executionPlanService.getExecutionPlanByShipmentId(id);
+            ExecutionPlanDto dto = executionPlanMapper.entityToDto(executionPlan);
+            return new ResponseEntity<>( dto, HttpStatus.OK );
+        }
+        catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch ( Exception e ) {
+            log.error( "Exception when calling get Execution Plan By ShipmentId {}", e );
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR );
+        }
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExecutionPlan(@PathVariable Long id) {
         try {

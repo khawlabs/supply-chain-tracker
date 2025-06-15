@@ -26,4 +26,13 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     )
     """, nativeQuery = true)
     List<Shipment> findUnassignedShipments();
+
+    @Query(value = """
+    SELECT CASE 
+        WHEN EXISTS (
+            SELECT 1 FROM execution_plan e WHERE e.shipment_id = :shipmentId
+        ) THEN true ELSE false 
+    END
+    """, nativeQuery = true)
+    boolean isShipmentAssigned(@Param("shipmentId") Long shipmentId);
 }

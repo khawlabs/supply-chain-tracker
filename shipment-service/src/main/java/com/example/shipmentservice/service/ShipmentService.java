@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,8 @@ public class ShipmentService {
     private final ShipmentEventProducer eventProducer;
 
     private static final String SHIPMENT_NOT_FOUND = "Shipment not found";
+    @Autowired
+    private NotificationService notificationService;
 
     @Transactional
     public Shipment createShipment(ShipmentDto shipmentDto, boolean sendNotification) throws Exception {
@@ -44,6 +47,7 @@ public class ShipmentService {
 
             if (sendNotification) {
                 eventProducer.sendNotification(shipmentSaved);
+                notificationService.notifyShipmentCreated(shipmentSaved);
             }
 
             log.info("✅ Shipment created: {}", shipmentDto.getShipmentId());
@@ -78,6 +82,7 @@ public class ShipmentService {
             throw new RessourceNotFoundException( "shipment with id " + id + " not found" );
         }
     }
+
     public Shipment getShipmentByShipmentId( String shipmentId ) {
         Optional<Shipment> shipmentSearch = shipmentRepository.findByShipmentId( shipmentId );
         if ( shipmentSearch.isPresent() ) {
@@ -97,4 +102,8 @@ public class ShipmentService {
     public List<Shipment> getUnassignedShipments() {
         return shipmentRepository.findUnassignedShipments();
     }
+    public Boolean checkAssignedShipment(Long id) {
+        return shipmentRepository.isShipmentAssigned(id);
+    }
+
 }
