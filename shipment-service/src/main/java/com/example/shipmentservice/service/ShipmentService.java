@@ -78,11 +78,23 @@ public class ShipmentService {
             throw new RessourceNotFoundException( "shipment with id " + id + " not found" );
         }
     }
+    public Shipment getShipmentByShipmentId( String shipmentId ) {
+        Optional<Shipment> shipmentSearch = shipmentRepository.findByShipmentId( shipmentId );
+        if ( shipmentSearch.isPresent() ) {
+            return shipmentSearch.get();
+        } else {
+            throw new RessourceNotFoundException( "shipment with id " + shipmentId + " not found" );
+        }
+    }
     @Transactional
     public void deleteShipment(Long id) {
         Shipment shipment = shipmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Shipment with ID " + id + " not found"));
         shipmentRepository.delete(shipment);
         log.info("🗑️ Shipment deleted: {}", id);
+    }
+
+    public List<Shipment> getUnassignedShipments() {
+        return shipmentRepository.findUnassignedShipments();
     }
 }

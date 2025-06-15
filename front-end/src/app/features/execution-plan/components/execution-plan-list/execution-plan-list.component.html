@@ -1,0 +1,56 @@
+<div class="container">
+  <input
+    type="text"
+    [formControl]="searchControl"
+    placeholder="Search..."
+    class="search-bar"
+  />
+
+  <div *ngIf="globalLoading.loading$ | async" class="loading-overlay">Loading...</div>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Priority</th>
+        <th>Estimated Delivery</th>
+        <th>Fragile</th>
+        <th>Notify</th>
+        <th>Plan Template</th>
+        <th>Shipment</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="executionPlans$ | async as plans">
+        <tr *ngFor="let plan of plans">
+          <td>{{ plan.id }}</td>
+          <td>{{ plan.priority }}</td>
+          <td>{{ plan.estimatedDeliveryDate | date: 'dd.MM.yyyy' }}</td>
+          <td>
+            <mat-icon color="primary" *ngIf="plan.fragile">check_circle</mat-icon>
+            <mat-icon color="warn" *ngIf="!plan.fragile">cancel</mat-icon>
+          </td>
+          <td>
+            <mat-icon color="primary" *ngIf="plan.notifyCustomer">check_circle</mat-icon>
+            <mat-icon color="warn" *ngIf="!plan.notifyCustomer">cancel</mat-icon>
+          </td>
+          <td>{{ plan.planTemplate ? plan.planTemplate.name : ''}}</td>
+          <td>{{ plan.shipment ? plan.shipment.shipmentId : ''}}</td>
+          <td>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete execution plan"
+              (click)="confirmDelete(plan.id)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

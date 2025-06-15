@@ -21,7 +21,7 @@ public class PlanTemplate extends Auditable<Long>  {
 
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE} , fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "plan_template_actions",
             joinColumns = @JoinColumn(name = "plan_template_id"),

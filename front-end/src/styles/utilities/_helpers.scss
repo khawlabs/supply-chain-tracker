@@ -1,0 +1,32 @@
+@use "sass:math"; // Imports math module from Sass for performing mathematical calculations
+@import "_variables.scss";
+
+/**
+ * Converts pixel values to rem units based on the root font size.
+ *
+ * @param {Number} $pxValue - The pixel value to be converted to rem.
+ * @return {String} - The calculated rem value as a string.
+ */
+@function pxToRem($pxValue) {
+  // The math.div function is used here to ensure division is handled correctly in Dart Sass.
+  @return #{math.div($pxValue, $font-size-base-px)}rem;
+}
+
+/**
+ * Generates a responsive font size using CSS's clamp function.
+ * This function takes minimum, preferred, and maximum font sizes (in pixels), converts them to rem,
+ * and uses clamp to provide a font size that adjusts between these values based on the viewport size.
+ *
+ * @param {Number} $min-size - The minimum font size in pixels.
+ * @param {Number} $preferred-size - The preferred font size in viewport units.
+ * @param {Number} $max-size - The maximum font size in pixels.
+ * @return {String} - A CSS clamp function string that sets the responsive font size.
+ */
+@function responsive-font-size($min-size, $preferred-size, $max-size) {
+  // Convert each pixel value to rem for consistency in font scaling.
+  $min: pxToRem($min-size);
+  $max: pxToRem($max-size);
+
+  // Returns a CSS clamp() function to adjust font size dynamically based on the viewport.
+  @return clamp($min, $preferred-size, $max);
+}

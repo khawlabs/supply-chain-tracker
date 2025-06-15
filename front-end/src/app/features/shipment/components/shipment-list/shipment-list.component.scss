@@ -1,0 +1,90 @@
+@import "helpers";
+
+.container {
+  margin: pxToRem(20);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100% - 40px);
+  overflow: hidden;
+}
+
+.search-bar {
+  margin-bottom: pxToRem(10);
+  padding: pxToRem(8);
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: pxToRem(10);
+}
+
+
+.loading-overlay {
+  position: absolute;
+  left: 0;
+  min-width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: pxToRem(20);
+  font-weight: bold;
+  color: #894500;
+  z-index: 99; /* Ensures it appears above the table */
+}
+
+
+.table-container {
+  flex-grow: 1; /* Fills remaining space in `.container` */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-radius: pxToRem(10%);
+  flex-grow: 1; /* Makes the table stretch to full height */
+}
+
+.table, .table th, .table td {
+  border: pxToRem(1) solid #ddd;
+}
+
+.table th, .table td {
+  padding: pxToRem(8);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  background-color: #894500;
+  color: whitesmoke;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-width: 5%;
+}
+.table td {
+  background-color: whitesmoke;
+}
+.table td i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.fa-check-circle, .fa-times-circle {
+  font-size: pxToRem(19);
+}
+button[mat-icon-button] {
+  margin-right: pxToRem(4);
+}
+.fa-check-circle {
+  color: green;
+}
+
+.fa-times-circle {
+  color: red;
+}

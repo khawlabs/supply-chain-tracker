@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Create Execution Plan</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+  <mat-card class="shipment-summary">
+    <mat-card-title>Shipment Details</mat-card-title>
+    <mat-card-content>
+      <div><strong>ID:</strong> {{ shipment.shipmentId }}</div>
+      <div><strong>Created:</strong> {{ shipment.createdAt | date: 'dd.MM.yyyy HH:mm' }}</div>
+      <div><strong>Origin:</strong> {{ shipment.origin }}</div>
+      <div><strong>Destination:</strong> {{ shipment.destination }}</div>
+      <div><strong>Status:</strong> {{ shipment.status }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Priority</mat-label>
+    <input matInput formControlName="priority" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Estimated Delivery</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="estimatedDeliveryDate" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-checkbox formControlName="fragile">Fragile</mat-checkbox>
+  <mat-checkbox formControlName="notifyCustomer">Notify Customer</mat-checkbox>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Plan Template</mat-label>
+    <mat-select formControlName="planTemplate">
+      <mat-option *ngFor="let template of templates" [value]="template">
+        {{ template.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button color="primary" (click)="submit()">Create</button>
+</mat-dialog-actions>

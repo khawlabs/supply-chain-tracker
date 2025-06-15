@@ -4,6 +4,8 @@ import com.example.shipmentservice.dto.ExecutionPlanDto;
 import com.example.shipmentservice.exception.RessourceNotFoundException;
 import com.example.shipmentservice.mapper.ExecutionPlanMapper;
 import com.example.shipmentservice.model.ExecutionPlan;
+import com.example.shipmentservice.model.PlanTemplate;
+import com.example.shipmentservice.model.Shipment;
 import com.example.shipmentservice.repository.ExecutionPlanRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -21,22 +23,39 @@ public class ExecutionPlanService {
 
     private final ExecutionPlanRepository executionPlanRepository;
 
+    private final ShipmentService shipmentService;
+    private final PlanTemplateService planTemplateService;
     private final ExecutionPlanMapper executionPlanMapper;
 
-    private static final String EXECUTION_PLAN_NOT_FOUND = "Shipment not found";
+    private static final String EXECUTION_PLAN_NOT_FOUND = "Execution Plan not found";
 
     @Transactional
-    public ExecutionPlan create(ExecutionPlanDto executionPlanDto) throws Exception {
+    public ExecutionPlan create(ExecutionPlanDto dto) {
         try {
-            ExecutionPlan executionPlan = executionPlanMapper.dtoToEntity( executionPlanDto );
-            executionPlan.setStatus("CREATED");
-            ExecutionPlan executionPlanSaved = executionPlanRepository.save(executionPlan);
-            log.info("✅ ExecutionPlan created: {}", executionPlanSaved.getId());
-            return executionPlanSaved;
+            // Use services to fetch managed entities
+            PlanTemplate planTemplate = planTemplateService.getByIdPlanTemplate(dto.getPlanTemplateId());
+
+            Shipment shipment = shipmentService.getShipmentByShipmentId(dto.getShipmentId());
+
+            // Build execution plan
+            ExecutionPlan executionPlan = ExecutionPlan.builder()
+                    .priority(dto.getPriority())
+                    .estimatedDeliveryDate(dto.getEstimatedDeliveryDate())
+                    .fragile(dto.getFragile())
+                    .notifyCustomer(dto.getNotifyCustomer())
+                    .status("CREATED")
+                    .planTemplate(planTemplate)
+                    .shipment(shipment)
+                    .build();
+
+            // Save the execution plan (cascades to shipment due to @OneToOne + ALL)
+            ExecutionPlan saved = executionPlanRepository.save(executionPlan);
+            log.info("✅ ExecutionPlan created: {}", saved.getId());
+            return saved;
 
         } catch (Exception e) {
             log.error("❌ Failed to create execution plan", e);
-            throw new Exception("Failed to create execution plan", e);
+            throw new RuntimeException("Failed to create execution plan", e);
         }
     }
     public ExecutionPlan update( Long id, ExecutionPlanDto executionPlanDto ) {

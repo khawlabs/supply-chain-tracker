@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+@import "scroll";
+@import "layout";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background: black;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+a {
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  color: whitesmoke;
+}

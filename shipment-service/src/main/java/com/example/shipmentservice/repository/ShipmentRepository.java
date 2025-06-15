@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 @Repository
 public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
@@ -15,5 +16,14 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from Shipment s where s.shipmentId = :shipmentId")
     Optional<Shipment> findByShipmentIdForUpdate(@Param("shipmentId") String shipmentId);
+
     Optional<Shipment> findByShipmentId(String shipmentId);
+
+    @Query(value = """
+    SELECT * FROM shipment s
+    WHERE NOT EXISTS (
+        SELECT 1 FROM execution_plan e WHERE e.shipment_id = s.id
+    )
+    """, nativeQuery = true)
+    List<Shipment> findUnassignedShipments();
 }

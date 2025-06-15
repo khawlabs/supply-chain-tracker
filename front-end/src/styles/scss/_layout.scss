@@ -1,0 +1,94 @@
+@import "helpers";
+
+.app-container {
+  display: grid;
+  grid-template-areas:
+        "header header"
+        "sidebar content";
+  grid-template-columns: pxToRem(200) 1fr; /* Sidebar width and content taking up the rest */
+  grid-template-rows: auto 1fr;
+  max-height: 100vh;
+  min-height: 100vh;
+}
+
+
+.app-header {
+  grid-area: header;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: pxToRem(10);
+  margin-bottom: pxToRem(5);
+  border-radius: 0 0 pxToRem(15) pxToRem(15);
+  border: #634118 solid pxToRem(2);
+
+  background-image: linear-gradient(to right, black, darkgoldenrod); /* Teal to light blue gradient */
+  color: white;
+  text-shadow: 1px 1px 2px black; /* Optional: Adds depth to text */
+
+  img {
+    height: pxToRem(30);
+  }
+  a:hover{
+    color: darkgray !important;
+  }
+  a:focus, a:active, a:visited {
+    color: whitesmoke;
+  }
+  > * {
+    margin-right: 10px; // Adjust the margin size as needed
+  }
+}
+
+.app-content {
+  grid-area: content;
+  padding: pxToRem(20);
+  font-size: responsive-font-size(14,2vw,18); // min: 14px, preferred: 2vw, max: 18px
+
+  background-color: #FFFFFF;
+  color: #333333;
+  border-radius:pxToRem(15);
+  border: black solid pxToRem(2);
+  max-height: calc(100vh - 55px);
+  overflow-y: auto;
+}
+
+.app-sidebar {
+  grid-area: sidebar;
+  background-color: whitesmoke;
+  padding: pxToRem(15);
+  border-radius: pxToRem(15);
+  border: black solid pxToRem(2);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Adds depth between sidebar and content */
+
+  background-image: linear-gradient(to right, #282828, #504a33); /* Dark base to dark goldenrod */
+  background-blend-mode: multiply;
+  color: antiquewhite; /* Ensures readability */
+
+  a:hover{
+    color: darkgray !important;
+    background-color: #504a33;
+  }
+  a:focus, a:active, a:visited {
+    color: whitesmoke;
+  }
+
+}
+
+
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  .app-container {
+    grid-template-areas:
+            "header"
+            "content"
+            "sidebar";
+    grid-template-columns: 1fr; /* 100% width for mobile */
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .app-sidebar {
+    border: pxToRem(2) solid #634118;
+  }
+}

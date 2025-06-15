@@ -11,44 +11,35 @@ import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-/* @Configuration
+@Configuration
 public class DataInitializerConfig {
 
     @Bean
     public CommandLineRunner dataInitializer(
             PlanTemplateRepository templateRepository,
             ActionRepository actionRepository
-
     ) {
         return args -> {
-
-
-            List<Action> predefinedActions = List.of(
-                    new Action(1L, "shipment is taken from customer",0L),
-                    new Action(2L, "shipment is on the way",0L),
-                    new Action(3L, "shipment is arrived to destination",0L),
-                    new Action(4L, "shipment is handover to the destination target",0L)
+            List<String> actionNames = List.of(
+                    "shipment is taken from customer",
+                    "shipment is on the way",
+                    "shipment is arrived to destination",
+                    "shipment is handover to the destination target"
             );
 
-            for (Action action : predefinedActions) {
-                if (!actionRepository.existsById(action.getId())) {
-                    actionRepository.save(action);
-                }
+            List<Action> savedActions = new ArrayList<>();
+            for (String name : actionNames) {
+                Action action = actionRepository.findByName(name)
+                        .orElseGet(() -> actionRepository.save(new Action(null, name, null)));
+                savedActions.add(action);
             }
 
-            Long templateId = 999L;
-            if (!templateRepository.existsById(templateId)) {
-                List<Action> actions = actionRepository.findAllById(
-                        predefinedActions.stream().map(Action::getId).toList()
-                );
-
+            if (templateRepository.findByName("General Shipment Template").isEmpty()) {
                 PlanTemplate template = new PlanTemplate();
-                template.setId(templateId);
                 template.setName("General Shipment Template");
-                template.setActions(new ArrayList<>(actions));
+                template.setActions(savedActions);
                 templateRepository.save(template);
             }
-            templateRepository.findAll().forEach(System.out::println);
         };
     }
-}*/
+}

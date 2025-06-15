@@ -1,0 +1,21 @@
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  display: block;
+  margin-bottom: 1rem;
+}
+.shipment-summary {
+  margin-bottom: 16px;
+
+  mat-card-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  mat-card-content div {
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+}

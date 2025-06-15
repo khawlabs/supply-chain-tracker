@@ -1,0 +1,14 @@
+@import "helpers";
+::-webkit-scrollbar {
+  width: pxToRem(8);
+  overflow-y: scroll;
+  background: lightGray;
+  box-shadow: inset 0 0 pxToRem(px) #707070;
+  border-radius: pxToRem(30);
+
+}
+
+::-webkit-scrollbar-thumb {
+  background: #895604;
+  border-radius: pxToRem(30);
+}

@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/shipment")
 @RequiredArgsConstructor
 public class ShipmentController {
     private final ShipmentService shipmentService;
     private final ShipmentMapper shipmentMapper;
 
-    @PostMapping("/shipments")
+    @PostMapping
     public ResponseEntity<?> createShipment( @RequestBody ShipmentDto shipmentDto ) {
         if ( shipmentDto == null ) {
             return new ResponseEntity<>( "", HttpStatus.BAD_REQUEST );
@@ -35,7 +35,7 @@ public class ShipmentController {
             return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
-    @PutMapping("/shipments")
+    @PutMapping
     public ResponseEntity<?> updateShipment( Long id, ShipmentDto shipmentDto ) {
         if ( shipmentDto == null || id == null ) {
             return ResponseEntity.badRequest().build();
@@ -50,7 +50,7 @@ public class ShipmentController {
             return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
-    @GetMapping("/shipments")
+    @GetMapping
     public ResponseEntity<?> getAllShipments() {
         try {
             List<Shipment> shipments = shipmentService.getAllShipments();
@@ -63,11 +63,11 @@ public class ShipmentController {
             }
         }
         catch ( Exception e ) {
-            log.error( "Exception when calling getDevices {}", e );
+            log.error( "Exception when calling getAllShipments {}", e );
             return new ResponseEntity<>( e, HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
-    @GetMapping("/shipments/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getShipmentById( @PathVariable Long id ) {
         if ( id == null ) {
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST );
@@ -80,7 +80,7 @@ public class ShipmentController {
         catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch ( Exception e ) {
-            log.error( "Exception when calling getDeviceById {}", e );
+            log.error( "Exception when calling getShipmentById {}", e );
             return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
@@ -93,6 +93,24 @@ public class ShipmentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // HTTP 404
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // HTTP 500
+        }
+    }
+
+    @GetMapping("/unassigned")
+    public ResponseEntity<?> getUnassignedShipments() {
+        try {
+            List<Shipment> shipments = shipmentService.getUnassignedShipments();
+
+            if ( CollectionUtils.isEmpty( shipments ) ) {
+                return ResponseEntity.noContent().build();
+            } else {
+                List<ShipmentDto> shipmentsDto = shipmentMapper.listEntityToDto( shipments );
+                return ResponseEntity.ok( shipmentsDto );
+            }
+        }
+        catch ( Exception e ) {
+            log.error( "Exception when calling getUnassignedShipments {}", e );
+            return new ResponseEntity<>( e, HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
 }
