@@ -88,3 +88,15 @@ services:
     depends_on:
       - init-waiter
     restart: always
+
+  # Frontend Service
+  supply-chain-frontend:
+    container_name: supply-chain-frontend
+    build:
+      context: .
+      dockerfile: docker/supply-chain-frontend/Dockerfile
+    ports:
+      - "82:80"
+    depends_on:
+      shipment-service:
+        condition: service_started

@@ -24,7 +24,6 @@ public class ShipmentService {
 
     private final ShipmentMapper shipmentMapper;
     private final ShipmentEventProducer eventProducer;
-
     private static final String SHIPMENT_NOT_FOUND = "Shipment not found";
     @Autowired
     private NotificationService notificationService;
@@ -40,7 +39,6 @@ public class ShipmentService {
                 log.warn("⚠ Shipment with ID {} already exists. Skipping creation.", shipmentDto.getShipmentId());
                 return existing.get();
             }
-
             Shipment shipment = shipmentMapper.dtoToEntity( shipmentDto );
             shipment.setStatus("CREATED");
             Shipment shipmentSaved = shipmentRepository.save(shipment);
@@ -49,7 +47,6 @@ public class ShipmentService {
                 eventProducer.sendNotification(shipmentSaved);
                 notificationService.notifyShipmentCreated(shipmentSaved);
             }
-
             log.info("✅ Shipment created: {}", shipmentDto.getShipmentId());
             return shipmentSaved;
 
